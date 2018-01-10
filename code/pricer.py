@@ -1,6 +1,4 @@
-import http.client,json,time,pymysql
-
-
+import http.client,json,time,pymysql,logging,threading
 
 def downloadResource(host,resource):
     data = None
@@ -8,15 +6,21 @@ def downloadResource(host,resource):
     conn = http.client.HTTPSConnection(host)
     conn.request('GET',resource,'',headers)
     response = conn.getresponse()
-    if response.status==200:
-        data = response.read()
+    data = response.read()
     return data
 
-def extractBitsoPrice(data):
+def bitsoPriceExtractor(data):
     price = None
     data = data.decode('utf-8')
     jsonObj = json.loads(data)
     price = jsonObj['payload']['last']
+    return price
+
+def bitfinexPriceExtractor(data):
+    price = None
+    data = data.decode('utf-8')
+    jsonString = json.loads(data)
+    price = jsonString['last_price']
     return price
 
 def createDBConnection(host,user, password, db_name):
@@ -52,26 +56,48 @@ def savePriceBD(exchange, cur_pair, price, db):
     sql = sql + 'NOW(), '
     sql = sql + str( price_type) + ')'
 
-    print(sql)
     cursor = db.cursor()
     cursor.execute(sql)
     db.commit()
 
+def startDownload(host,resource,exchange,cur_pair,pause,db,extractor):
+    number = 1
+    while True:
+        try:
+            data = downloadResource(host,resource)
+            price = extractor(data)
+            savePriceBD(exchange, cur_pair, price, db);
+            print('Download successfull ' + str(number) + ': ' ,host+resource)
+            number += 1
+        except Exception as err:
+            print(threading.current_thread().name, 'Error', host+resource )
+            logging.exception(err)
+        time.sleep(pause)
+
+def startMultiDownload():
+    print('Type next Mysql params -  host user password dbName: ')
+    db_params = input().split()
+    print('Type amount of resources: ')
+    nums_requests = int(input())
+    ths = []
+    for i in range(nums_requests):
+        db = createDBConnection(*db_params)
+        print('Type params for resource number ' + str(i+1) + ' : host resource exchange currencyPair pause: ')
+        req = input().split()
+        req[4] = int(req[4])
+        args = ( *req, db, exts[req[2]] )
+        th = threading.Thread(target=startDownload, args=args )
+        th.start()
+        ths.append(th)
+    for th in ths:
+        th.join()
 
 
+exts = {}
+exts['bitso'] = bitsoPriceExtractor
+exts['bitfinex'] = bitsoPriceExtractor
 
 
-
-def test1():
-    data = downloadResource('api.bitso.com','/v3/ticker/?book=xrp_mxn')
-    price = extractBitsoPrice(data)
-    print(price)
-
-def test2():
-    db = createDBConnection('localhost','root','root','crypto_prices')
-    id = savePriceBD('bitso','xrp_mxn',1717,db)
-    print(id)
-
-test2()
+startMultiDownload()
 
 
