@@ -23,6 +23,14 @@ def bitfinexPriceExtractor(data):
     price = jsonString['last_price']
     return price
 
+def binancePriceExtractor(data):
+    price = None
+    data = data.decode('utf-8')
+    jsonObj = json.loads(data)
+    price = jsonObj['lastPrice']
+    return price
+
+
 def createDBConnection(host,user, password, db_name):
     db = pymysql.connect(host,user,password,db_name)
     return db
@@ -95,8 +103,8 @@ def startMultiDownload():
 
 exts = {}
 exts['bitso'] = bitsoPriceExtractor
-exts['bitfinex'] = bitsoPriceExtractor
-
+exts['bitfinex'] = bitfinexPriceExtractor
+exts['binance'] = binancePriceExtractor
 
 startMultiDownload()
 

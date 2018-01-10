@@ -22,7 +22,7 @@ CREATE TABLE  coin_price (
 date_time_sec BIGINT NOT NULL,
 exchange_id SMALLINT NOT NULL,
 currency_pair_id SMALLINT NOT NULL,
-price DOUBLE PRECISION(18,5) NOT NULL,
+price DOUBLE PRECISION(22,8) NOT NULL,
 date_time DATETIME NOT NULL,
 price_type_id SMALLINT NOT NULL,
 PRIMARY KEY (date_time_sec, exchange_id, currency_pair_id ),
@@ -44,11 +44,19 @@ insert into currency_pair(name) values
 ("iot_usd"),
 ("ltc_usd"),
 ("bch_usd"),
-("dsh_usd");
+("dsh_usd"),
+("xrp_btc"),
+("eth_btc"),
+("ltc_btc"),
+("bch_btc"),
+("iot_btc"),
+("xlm_btc");
 
 insert into price_type(name) values("last");
 
-insert into exchange(name) values ("bitso"),("bitfinex");
+insert into exchange(name) values ("bitso"),("bitfinex"), ("binance"), ("poloniex"), ("hitbtc");
+
+
 
 
 
