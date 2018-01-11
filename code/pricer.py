@@ -93,12 +93,14 @@ def startMultiDownload():
         print('Type params for resource number ' + str(i+1) + ' : host resource exchange currencyPair pause: ')
         req = input().split()
         req[4] = int(req[4])
-        args = ( *req, db, exts[req[2]] )
-        th = threading.Thread(target=startDownload, args=args )
+        req = req + [db, exts[req[2]]]
+        th = threading.Thread(target=startDownload, args=req )
         th.start()
         ths.append(th)
     for th in ths:
         th.join()
+
+
 
 
 exts = {}

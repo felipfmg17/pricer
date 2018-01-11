@@ -1,0 +1,12 @@
+localhost root root pricer
+14
+api.bitso.com /v3/ticker/?book=xrp_mxn bitso xrp_mxn 60
+api.bitso.com /v3/ticker/?book=btc_mxn bitso btc_mxn 60
+api.bitso.com /v3/ticker/?book=eth_mxn bitso eth_mxn 60
+api.bitso.com /v3/ticker/?book=ltc_mxn bitso ltc_mxn 60
+api.bitfinex.com /v1/pubticker/xrpusd bitfinex xrp_usd 60
+api.bitfinex.com /v1/pubticker/btcusd bitfinex btc_usd 60
+api.bitfinex.com /v1/pubticker/ethusd bitfinex eth_usd 60
+api.bitfinex.com /v1/pubticker/ltcusd bitfinex ltc_usd 60
+api.bitfinex.com /v1/pubticker/bchusd bitfinex bch_usd 60
+
