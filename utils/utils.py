@@ -1,4 +1,4 @@
-import pricer
+
 import json
 
 
@@ -28,8 +28,17 @@ import json
 #     print(ans)
 
 
+def downloadResource(host,resource):
+    data = None
+    headers = {'User-Agent': 'Mozilla/5.0'}
+    conn = http.client.HTTPSConnection(host)
+    conn.request('GET',resource,'',headers)
+    response = conn.getresponse()
+    data = response.read()
+    return data
+
 def genBinancePairsBD():
-	data = pricer.downloadResource('api.binance.com', '/api/v1/ticker/allBookTickers')
+	data = downloadResource('api.binance.com', '/api/v1/ticker/allBookTickers')
 	data = data.decode('utf-8')
 	jsonObj = json.loads(data)
 	pairs = []

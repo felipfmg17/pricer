@@ -1,5 +1,9 @@
 import http.client,json,time,pymysql,logging,threading
 
+# example host=api.binance.com
+# resource = /api/v1/ticker/24hr?symbol=ETHBTC
+# Downloads the desired resource from the host
+# returns a string
 def downloadResource(host,resource):
     data = None
     headers = {'User-Agent': 'Mozilla/5.0'}
@@ -9,6 +13,9 @@ def downloadResource(host,resource):
     data = response.read()
     return data
 
+# Receives a Bitso Json file with a ticker containing
+# the price of a coin
+# returns the price as a decimal number
 def bitsoPriceExtractor(data):
     price = None
     data = data.decode('utf-8')
@@ -16,6 +23,9 @@ def bitsoPriceExtractor(data):
     price = jsonObj['payload']['last']
     return price
 
+# Receives a Bitfinex Json file with a ticker containing
+# the price of a coin
+# returns the price as a decimal number
 def bitfinexPriceExtractor(data):
     price = None
     data = data.decode('utf-8')
@@ -23,6 +33,9 @@ def bitfinexPriceExtractor(data):
     price = jsonString['last_price']
     return price
 
+# Receives a Bitfinex Json file with a ticker containing
+# the price of a coin
+# returns the price as a decimal number
 def binancePriceExtractor(data):
     price = None
     data = data.decode('utf-8')
@@ -34,6 +47,8 @@ def createDBConnection(host,user, password, db_name):
     db = pymysql.connect(host,user,password,db_name)
     return db
 
+# Stores a prices with the exchange and currency pair information
+# exchange  and cur_pair must be a valid string from the database
 def savePriceBD(exchange, cur_pair, price, db):
     cursor = db.cursor()
     sql = 'select id from currency_pair where name = \"' + cur_pair + '\"'
@@ -67,6 +82,11 @@ def savePriceBD(exchange, cur_pair, price, db):
     cursor.execute(sql)
     db.commit()
 
+# Start an infinite loop which downloads a resources, extracts the price
+# and stores it in a database
+# The price is extracted from the json file using 'extractor' function
+# The loop wait for some seconds specified in 'pause'
+# exchange and cur_pair must be exact values from the database
 def startDownload(host,resource,exchange,cur_pair,pause,db,extractor):
     number = 1
     while True:
@@ -81,6 +101,9 @@ def startDownload(host,resource,exchange,cur_pair,pause,db,extractor):
             logging.exception(err)
         time.sleep(pause)
 
+# runs  'startDownload()'  for multiple currency pairs
+# it ask for the database connection and the number of resources you want to download
+# then type the resources including host, currency pair , pause, host
 def startMultiDownload():
     print('Type next Mysql params -  host user password dbName: ')
     db_params = input().split()
@@ -98,8 +121,6 @@ def startMultiDownload():
         ths.append(th)
     for th in ths:
         th.join()
-
-
 
 
 exts = {}
