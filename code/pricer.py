@@ -30,7 +30,6 @@ def binancePriceExtractor(data):
     price = jsonObj['lastPrice']
     return price
 
-
 def createDBConnection(host,user, password, db_name):
     db = pymysql.connect(host,user,password,db_name)
     return db
