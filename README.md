@@ -19,11 +19,11 @@ This program downloads prices from different cryptocurrency exchanges and stores
 
     <pre> pipenv install --three </pre>
 
-* Create a database in MySQLwith the name 'pricer'
+* Create a database in MySQL with the name pricer
 
 * Load database :
 
-    <pre> mysql -u USER_NAME -p  <  db/create.sql </pre>
+    <pre> mysql -u USER_NAME -p  pricer <  db/create.sql </pre>
 
 
 
@@ -38,4 +38,4 @@ This program downloads prices from different cryptocurrency exchanges and stores
 
 ### Note
 
-Works only with Bitfinex, Bitso and binance
+Works only with Bitfinex, Bitso and Binance
