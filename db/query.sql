@@ -25,4 +25,4 @@ ON a.currency_pair_id = b.id
 JOIN exchange as c
 ON a.exchange_id = c.id
 WHERE c.name = 'binance'
-AND b.name = 'xrp_btc';
+AND b.name = 'bqx_btc';

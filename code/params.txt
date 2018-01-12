@@ -1,4 +1,4 @@
-localhost root root pricer
+localhost root didu.2015 pricer
 14
 api.bitso.com /v3/ticker/?book=xrp_mxn bitso xrp_mxn 60
 api.bitso.com /v3/ticker/?book=btc_mxn bitso btc_mxn 60
@@ -9,8 +9,3 @@ api.bitfinex.com /v1/pubticker/btcusd bitfinex btc_usd 60
 api.bitfinex.com /v1/pubticker/ethusd bitfinex eth_usd 60
 api.bitfinex.com /v1/pubticker/ltcusd bitfinex ltc_usd 60
 api.bitfinex.com /v1/pubticker/bchusd bitfinex bch_usd 60
-api.binance.com /api/v1/ticker/24hr?symbol=BTCUSDT  binance btc_usd 60
-api.binance.com /api/v1/ticker/24hr?symbol=XRPBTC  binance xrp_btc 60
-api.binance.com /api/v1/ticker/24hr?symbol=ETHBTC  binance eth_btc 60
-api.binance.com /api/v1/ticker/24hr?symbol=LTCBTC  binance ltc_btc 60
-api.binance.com /api/v1/ticker/24hr?symbol=XLMBTC  binance xlm_btc 60
