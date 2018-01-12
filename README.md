@@ -1,6 +1,6 @@
 
 
-##Pricer
+## Pricer
 
 This program downloads prices from different cryptocurrency exchanges and stores them in a database
 
