@@ -30,7 +30,8 @@ This program downloads prices from different cryptocurrency exchanges and stores
 ### Run the program
 
 
-* Modify  the file code/params.txt and inlude the host names and resources of the files you want to download
+* Modify  the file code/params.txt and inlude the host names, notification email address and resources of the files you want to download
+
 
 * To start the program execute the file:
 
