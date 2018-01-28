@@ -1,1 +1,1 @@
-pipenv run python pricer.py < params.txt
+nohup pipenv run python pricer.py < params.txt &
