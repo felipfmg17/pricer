@@ -1,4 +1,4 @@
-import http.client,json,time,pymysql,logging,threading
+import http.client,json,time,pymysql,logging,threading, smtplib
 
 # example host=api.binance.com
 # resource = /api/v1/ticker/24hr?symbol=ETHBTC
@@ -82,24 +82,55 @@ def savePriceBD(exchange, cur_pair, price, db):
     cursor.execute(sql)
     db.commit()
 
+
+def sendErrorEmail(destemail,msg):
+    try:
+        gmail_user = 'felipedevcrypto@gmail.com'
+        gmail_password = 'didu.2015'
+
+        sent_from = gmail_user
+        #to = ['felipfmg17@gmail.com']
+        to = [destemail]
+        subject = 'Pricer Error'
+        body = msg
+
+        email_text = """\
+        From: %s
+        To: %s
+        Subject: %s
+
+        %s
+        """ % (sent_from, ", ".join(to), subject, body)
+
+        server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+        server.login(gmail_user, gmail_password)
+        server.sendmail(sent_from, to, email_text)
+        server.close()
+        print('Email sent!')
+    except:
+        print('Email could not be sent')
+
 # Start an infinite loop which downloads a resources, extracts the price
 # and stores it in a database
 # The price is extracted from the json file using 'extractor' function
 # The loop wait for some seconds specified in 'pause'
 # exchange and cur_pair must be exact values from the database
-def startDownload(host,resource,exchange,cur_pair,pause,db,extractor):
+def startDownload(host,resource,exchange,cur_pair,pause,db,extractor,destemail):
     number = 1
     while True:
         try:
             data = downloadResource(host,resource)
             price = extractor(data)
             savePriceBD(exchange, cur_pair, price, db);
-            print('Download successfull ' + str(number) + ': ' ,host+resource)
+            print('Download successful ' + str(number) + ': ' ,host+resource)
             number += 1
         except Exception as err:
             print(threading.current_thread().name, 'Error', host+resource )
             logging.exception(err)
+            sendErrorEmail(destemail,host+resource)
         time.sleep(pause)
+
+
 
 # runs  'startDownload()'  for multiple currency pairs
 # it ask for the database connection and the number of resources you want to download
@@ -107,6 +138,8 @@ def startDownload(host,resource,exchange,cur_pair,pause,db,extractor):
 def startMultiDownload():
     print('Type next Mysql params -  host user password dbName: ')
     db_params = input().split()
+    print('Type email for notifications: ')
+    destemail = input()
     print('Type amount of resources: ')
     nums_requests = int(input())
     ths = []
@@ -115,7 +148,7 @@ def startMultiDownload():
         print('Type params for resource number ' + str(i+1) + ' : host resource exchange currencyPair pause: ')
         req = input().split()
         req[4] = int(req[4])
-        req = req + [db, exts[req[2]]]
+        req = req + [db, exts[req[2]],destemail]
         th = threading.Thread(target=startDownload, args=req )
         th.start()
         ths.append(th)
